@@ -1,0 +1,114 @@
+﻿<Page
+    x:Class="SpinnerNav.Pages.Page4"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SpinnerNav.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:root="clr-namespace:SpinnerNav"
+    Title="Page4"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <Grid Background="#202025">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontFamily="Calibri"
+            FontSize="60"
+            FontWeight="Bold"
+            Foreground="DodgerBlue"
+            Text="PAGE 4" />
+        <!--
+        <TextBlock
+            Width="Auto"
+            Height="Auto"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="172"
+            Foreground="WhiteSmoke"
+            Opacity="0.6"
+            Style="{StaticResource SpinningText}"
+            Text="&#xf021;" />
+        -->
+        <!--
+            &#xf110;
+            &#xf2dd;
+            &#xf0a3;
+            &#xf1da;
+            &#xf021;
+            &#xf1ce;
+        -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <!--  https://icon-sets.iconify.design/material-symbols/  -->
+            <root:SpinButtonControl
+                Grid.Column="0"
+                SpinBrush="#2a84f1"
+                SpinClockwise="True"
+                SpinHeight="100"
+                SpinIcon="M447.1 86.2C400.3 33.4 332.2 0 256 0C114.6 0 0 114.6 0 256h64c0-106.1 85.9-192 192-192c58.5 0 110.4 26.5 145.5 67.8L341.3 192H512V21.3zM256 448c-58.5 0-110.4-26.5-145.5-67.8l60.2-60.2H0v170.7l64.9-64.9c46.8 52.8 115 86.2 191.1 86.2c141.4 0 256-114.6 256-256h-64c0 106.1-85.9 192-192 192"
+                SpinSpeed="0:0:1.0"
+                SpinVisible="True"
+                SpinWidth="100" />
+
+            <root:SpinButtonControl
+                Grid.Column="1"
+                SpinBrush="#2a84f1"
+                SpinClockwise="False"
+                SpinHeight="100"
+                SpinIcon="M11 22v-1q-3.125-.35-5.363-2.588T3.05 13.05h-1q-.425 0-.712-.288t-.288-.712q0-.425.288-.712t.712-.288h1q.35-3.125 2.588-5.363T11 3.1v-1q0-.425.288-.712T12 1.1q.425 0 .713.288T13 2.1v1q3.125.35 5.363 2.588t2.587 5.362h1q.425 0 .713.288t.287.712q0 .425-.287.713t-.713.287h-1q-.35 3.125-2.587 5.363T13 21v1q0 .425-.288.713T12 23q-.425 0-.712-.288T11 22m1-2.95q2.9 0 4.95-2.05T19 12.05q0-2.9-2.05-4.95T12 5.05q-2.9 0-4.95 2.05T5 12.05q0 2.9 2.05 4.95T12 19.05"
+                SpinSpeed="0:0:3.2"
+                SpinVisible="True"
+                SpinWidth="100" />
+            <root:SpinButtonControl
+                Grid.Column="1"
+                SpinBrush="#2a84f1"
+                SpinClockwise="False"
+                SpinHeight="100"
+                SpinIcon="M11 22v-1q-3.125-.35-5.363-2.588T3.05 13.05h-1q-.425 0-.712-.288t-.288-.712q0-.425.288-.712t.712-.288h1q.35-3.125 2.588-5.363T11 3.1v-1q0-.425.288-.712T12 1.1q.425 0 .713.288T13 2.1v1q3.125.35 5.363 2.588t2.587 5.362h1q.425 0 .713.288t.287.712q0 .425-.287.713t-.713.287h-1q-.35 3.125-2.587 5.363T13 21v1q0 .425-.288.713T12 23q-.425 0-.712-.288T11 22m1-2.95q2.9 0 4.95-2.05T19 12.05q0-2.9-2.05-4.95T12 5.05q-2.9 0-4.95 2.05T5 12.05q0 2.9 2.05 4.95T12 19.05"
+                SpinSpeed="0:0:4.0"
+                SpinVisible="True"
+                SpinWidth="100" />
+            <root:SpinButtonControl
+                Grid.Column="1"
+                SpinBrush="#2a84f1"
+                SpinClockwise="True"
+                SpinHeight="40"
+                SpinIcon="M447.1 86.2C400.3 33.4 332.2 0 256 0C114.6 0 0 114.6 0 256h64c0-106.1 85.9-192 192-192c58.5 0 110.4 26.5 145.5 67.8L341.3 192H512V21.3zM256 448c-58.5 0-110.4-26.5-145.5-67.8l60.2-60.2H0v170.7l64.9-64.9c46.8 52.8 115 86.2 191.1 86.2c141.4 0 256-114.6 256-256h-64c0 106.1-85.9 192-192 192"
+                SpinSpeed="0:0:1.8"
+                SpinVisible="True"
+                SpinWidth="40" />
+
+
+            <root:SpinButtonControl
+                Grid.Column="2"
+                SpinBrush="#2a84f1"
+                SpinClockwise="True"
+                SpinHeight="100"
+                SpinIcon="M7.95 21q-.55 0-1-.262T6.225 20l-4.05-7q-.275-.475-.275-1t.275-1l4.05-7q.275-.475.725-.737t1-.263h8.1q.55 0 1 .263t.725.737l4.05 7q.275.475.275 1t-.275 1l-4.05 7q-.275.475-.725.738t-1 .262zm0-2h8.1l4.025-7l-4.025-7h-8.1L3.9 12zM12 12"
+                SpinSpeed="0:0:3.0"
+                SpinVisible="True"
+                SpinWidth="100" />
+            <root:SpinButtonControl
+                Grid.Column="2"
+                SpinBrush="#2a84f1"
+                SpinClockwise="False"
+                SpinHeight="100"
+                SpinIcon="M8 16q.825 0 1.413-.587T10 14q0-.825-.587-1.412T8 12q-.825 0-1.412.588T6 14q0 .825.588 1.413T8 16m8 0q.825 0 1.413-.587T18 14q0-.825-.587-1.412T16 12q-.825 0-1.412.588T14 14q0 .825.588 1.413T16 16m-4-6q.825 0 1.413-.587T14 8q0-.825-.587-1.412T12 6q-.825 0-1.412.588T10 8q0 .825.588 1.413T12 10m0 12q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"
+                SpinSpeed="0:0:3.0"
+                SpinVisible="True"
+                SpinWidth="100" />
+        </Grid>
+    </Grid>
+</Page>

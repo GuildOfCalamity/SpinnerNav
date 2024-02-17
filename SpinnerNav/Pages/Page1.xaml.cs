@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using SpinnerNav.Support;
 
 namespace SpinnerNav.Pages
 {
@@ -61,15 +53,45 @@ namespace SpinnerNav.Pages
             }
         }
 
+        private bool spin4Visible = false;
+        public bool Spin4Visible
+        {
+            get => spin4Visible;
+            set
+            {
+                spin4Visible = value;
+                OnPropertyChanged();
+            }
+        }
+
         public Page1()
         {
             InitializeComponent();
             this.DataContext = this;
         }
 
-        void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        async void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //IsSpinVisible ^= true;
+            try
+            {
+                tbDescription.Text = "Working...";
+                Spin4Visible = true;
+
+                // Call work method and wait.
+                _ = await Task.Run(() => PerformSomeWork());
+                tbDescription.Text = "Almost done...";
+
+                // Or, return a value directly to the control.
+                tbDescription.Text = await Task.Run(() => PerformSomeWork());
+
+                // If not using INotify then we could call our home-brew UI refresh. (not recommended)
+                Extensions.DoEvents(true);
+            }
+            catch (Exception) { }
+            finally
+            {
+                Spin4Visible = false;
+            }
         }
 
         public void Spin1_Click(object sender, RoutedEventArgs e)
@@ -87,6 +109,16 @@ namespace SpinnerNav.Pages
         {
             Spin3Visible ^= true;
             Spin1Visible = Spin2Visible = true;
+        }
+
+        /// <summary>
+        /// Place-holder method for testing.
+        /// </summary>
+        /// <param name="msTimeout">time to wait (in milliseconds)</param>
+        string PerformSomeWork(int pause = 2000)
+        {
+            new System.Threading.ManualResetEvent(false).WaitOne(pause); // An over-engineered Thread.Sleep()
+            return $"Finished work at {DateTime.Now.ToLongTimeString()}";
         }
     }
 }

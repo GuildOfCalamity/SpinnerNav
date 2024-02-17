@@ -55,7 +55,7 @@
             <!--  https://icon-sets.iconify.design/material-symbols/  -->
             <root:SpinButtonControl
                 Grid.Column="0"
-                SpinBrush="#2a84f1"
+                SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="100"
                 SpinIcon="M14 4a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 16a2 2 0 1 1-4 0a2 2 0 0 1 4 0ZM7 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm14-8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Z"
@@ -65,7 +65,7 @@
 
             <root:SpinButtonControl
                 Grid.Column="1"
-                SpinBrush="#2a84f1"
+                SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="100"
                 SpinIcon="M14 4a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 16a2 2 0 1 1-4 0a2 2 0 0 1 4 0ZM7 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm14-8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Z"
@@ -74,7 +74,7 @@
                 SpinWidth="100" />
             <root:SpinButtonControl
                 Grid.Column="1"
-                SpinBrush="#2a84f1"
+                SpinBrush="DodgerBlue"
                 SpinClockwise="False"
                 SpinHeight="100"
                 SpinIcon="M14 4a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 16a2 2 0 1 1-4 0a2 2 0 0 1 4 0ZM7 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm14-8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Z"
@@ -84,7 +84,7 @@
 
             <root:SpinButtonControl
                 Grid.Column="2"
-                SpinBrush="#2a84f1"
+                SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="100"
                 SpinIcon="M14 4a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 16a2 2 0 1 1-4 0a2 2 0 0 1 4 0ZM7 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm14-8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Z"
@@ -93,7 +93,7 @@
                 SpinWidth="100" />
             <root:SpinButtonControl
                 Grid.Column="2"
-                SpinBrush="#2a84f1"
+                SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="100"
                 SpinIcon="M14 4a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 16a2 2 0 1 1-4 0a2 2 0 0 1 4 0ZM7 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm14-8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Zm0 8a2 2 0 1 1-4 0a2 2 0 0 1 4 0Z"

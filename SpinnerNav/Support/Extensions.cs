@@ -12,6 +12,7 @@ using System.Windows;
 using Path = System.IO.Path;
 using Con = System.Diagnostics.Debug;
 using System.Windows.Threading;
+using System.Threading;
 
 namespace SpinnerNav.Support
 {
@@ -55,6 +56,28 @@ namespace SpinnerNav.Support
             return text;
         }
 
+        public static T? ParseEnum<T>(this string value)
+        {
+            try { return (T)Enum.Parse(typeof(T), value, true); }
+            catch (Exception) { return default(T); }
+        }
+
+        public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
+        {
+            return val.CompareTo(min) < 0 ? min : (val.CompareTo(max) > 0 ? max : val);
+        }
+
+        public static TimeSpan Multiply(this TimeSpan timeSpan, double scalar) => new TimeSpan((long)(timeSpan.Ticks * scalar));
+
+        /// <summary>
+        /// LINQ extension.
+        /// </summary>
+        public static void ForEach<T>(this IEnumerable<T> ie, Action<T> action)
+        {
+            foreach (var i in ie)
+                action(i);
+        }
+
         /// <summary>
         /// Simplified try/catch block.
         /// </summary>
@@ -70,6 +93,50 @@ namespace SpinnerNav.Support
                 };
                 Con.WriteLine(string.Join(Environment.NewLine, lines));
             }
+        }
+
+        public static string LocalApplicationDataFolder(string moduleName = "Settings")
+        {
+            var result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}\\{moduleName}");
+            return result;
+        }
+
+        /// <summary>
+        /// Generic method for using a control's built-in dispatcher.
+        /// </summary>
+        /// <param name="ctrl">common <see cref="System.Windows.Controls.Control"/></param>
+        /// <param name="message">the text for the control's content</param>
+        public static void UpdateControlContent(this System.Windows.Controls.Control ctrl, string message)
+        {
+            if (ctrl.Dispatcher == null)
+                return;
+
+            ctrl.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() =>
+            {
+                // This could be changed to a switch/case.
+                if (ctrl is ListView lv)
+                    lv.Items.Add(message);
+                else if (ctrl is ListBox lb)
+                    lb.Items.Add(message);
+                else if (ctrl is Label lbl)
+                    lbl.Content = message;
+                else if (ctrl is TextBox tb)
+                    tb.Text = message;
+                else if (ctrl is Button btn)
+                    btn.Content = message;
+                else if (ctrl is GroupBox grb)
+                    grb.Content = message;
+                else if (ctrl is CheckBox ckb)
+                    ckb.Content = message;
+                else if (ctrl is RadioButton rdb)
+                    rdb.Content = message;
+                else if (ctrl is ComboBox cmb)
+                    cmb.Text = message;
+                else if (ctrl is ProgressBar pb)
+                    pb.Value = Double.Parse(message);
+                else
+                    Con.WriteLine($"Undefined control type: {ctrl.GetType()}");
+            }));
         }
 
         /// <summary>
@@ -104,6 +171,40 @@ namespace SpinnerNav.Support
                 action();
             else
                 dispatcher.BeginInvoke(DispatcherPriority.Normal, (Delegate)(action));
+        }
+
+        /// <summary>
+        /// A throw-back to the good ol' WinForm days.
+        /// </summary>
+        /// <param name="useNestedFrame">if true, employ <see cref="Dispatcher.PushFrame"/></param>
+        public static void DoEvents(bool useNestedFrame = false)
+        {
+            if (!useNestedFrame)
+                System.Windows.Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new System.Threading.ThreadStart(() => System.Threading.Thread.Sleep(0)));
+            else
+            {
+                // Create new nested message pump.
+                DispatcherFrame nested = new DispatcherFrame(true);
+
+                // Dispatch a callback to the current message queue, when getting called,
+                // this callback will end the nested message loop. The priority of this
+                // callback should always be lower than that of the UI event messages.
+                #pragma warning disable CS8622
+                var exitFrameOp = Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, (SendOrPostCallback)delegate (object arg)
+                {
+                    DispatcherFrame? f = arg as DispatcherFrame;
+                    if (f != null) { f.Continue = false; }
+                }, nested);
+                #pragma warning restore CS8622
+
+                // Pump the nested message loop, the nested message loop will
+                // immediately process the messages left inside the message queue.
+                Dispatcher.PushFrame(nested);
+
+                // If the exit frame callback doesn't get completed, abort it.
+                if (exitFrameOp.Status != DispatcherOperationStatus.Completed)
+                    exitFrameOp.Abort();
+            }
         }
 
 #if SYSTEM_DRAWING
@@ -559,7 +660,7 @@ namespace SpinnerNav.Support
             // Casting the UIElementCollection into List
             List<FrameworkElement> lstElement = coll.Cast<FrameworkElement>().ToList();
 
-            // Geting all Control from list
+            // Getting all Control from list
             var lstControl = lstElement.OfType<Control>();
 
             // Hide all Controls
@@ -577,7 +678,7 @@ namespace SpinnerNav.Support
             // Casting the UIElementCollection into List
             List<FrameworkElement> lstElement = coll.Cast<FrameworkElement>().ToList();
 
-            // Geting all Control from list
+            // Getting all Control from list
             var lstControl = lstElement.OfType<Control>();
 
             // Iterate control objects
@@ -628,15 +729,156 @@ namespace SpinnerNav.Support
         /// <param name="btn"><see cref="Button"/></param>
         public static void RemoveClickEvent(this Button btn)
         {
-            FieldInfo f1 = typeof(Control).GetField("EventClick", BindingFlags.Static | BindingFlags.NonPublic);
+            FieldInfo? f1 = typeof(Control).GetField("EventClick", BindingFlags.Static | BindingFlags.NonPublic);
             if (f1 != null)
             {
-                object obj = f1.GetValue(btn);
-                PropertyInfo pi = btn.GetType().GetProperty("Events", BindingFlags.NonPublic | BindingFlags.Instance);
-                System.ComponentModel.EventHandlerList list = (System.ComponentModel.EventHandlerList)pi.GetValue(btn, null);
-                list.RemoveHandler(obj, list[obj]);
+                object? obj = f1.GetValue(btn);
+                if (obj != null)
+                {
+                    PropertyInfo? pi = btn?.GetType().GetProperty("Events", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (pi != null)
+                    {
+                        System.ComponentModel.EventHandlerList? list = (System.ComponentModel.EventHandlerList)pi.GetValue(btn, null);
+                        list?.RemoveHandler(obj, list[obj]);
+                    }
+                }
             }
         }
 
+        #region [Task Helpers]
+        /// <summary>
+        /// Chainable task helper.
+        /// var result = await SomeLongAsyncFunction().WithTimeout(TimeSpan.FromSeconds(2));
+        /// </summary>
+        /// <typeparam name="TResult">the type of task result</typeparam>
+        /// <returns><see cref="Task"/>TResult</returns>
+        public async static Task<TResult> WithTimeout<TResult>(this Task<TResult> task, TimeSpan timeout)
+        {
+            Task winner = await (Task.WhenAny(task, Task.Delay(timeout)));
+
+            if (winner != task)
+                throw new TimeoutException();
+
+            return await task;   // Unwrap result/re-throw
+        }
+
+        /// <summary>
+        /// Task extension to add a timeout.
+        /// </summary>
+        /// <returns>The task with timeout.</returns>
+        /// <param name="task">Task.</param>
+        /// <param name="timeoutInMilliseconds">Timeout duration in Milliseconds.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public async static Task<T> WithTimeout<T>(this Task<T> task, int timeoutInMilliseconds)
+        {
+            var retTask = await Task.WhenAny(task, Task.Delay(timeoutInMilliseconds))
+                .ConfigureAwait(false);
+
+            #pragma warning disable CS8603 // Possible null reference return.
+            return retTask is Task<T> ? task.Result : default;
+            #pragma warning restore CS8603 // Possible null reference return.
+        }
+
+        /// <summary>
+        /// Chainable task helper.
+        /// </summary>
+        /// <example>
+        /// var result = await SomeLongTaskFunction().WithCancellation(cts.Token);
+        /// </example>
+        /// <typeparam name="TResult">the type of task result</typeparam>
+        /// <returns><see cref="Task"/>TResult</returns>
+        public static Task<TResult> WithCancellation<TResult>(this Task<TResult> task, CancellationToken cancelToken)
+        {
+            TaskCompletionSource<TResult> tcs = new TaskCompletionSource<TResult>();
+            CancellationTokenRegistration reg = cancelToken.Register(() => tcs.TrySetCanceled());
+            task.ContinueWith(ant =>
+            {
+                reg.Dispose();
+                if (ant.IsCanceled)
+                    tcs.TrySetCanceled();
+                else if (ant.IsFaulted)
+                    tcs.TrySetException(ant.Exception?.InnerException ?? new Exception("empty inner exception"));
+                else
+                    tcs.TrySetResult(ant.Result);
+            });
+            return tcs.Task;  // Return the TaskCompletionSource result
+        }
+
+        public static Task<T> WithAllExceptions<T>(this Task<T> task)
+        {
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
+
+            task.ContinueWith(ignored =>
+            {
+                switch (task.Status)
+                {
+                    case TaskStatus.Canceled:
+                        Con.WriteLine($"[TaskStatus.Canceled]");
+                        tcs.SetCanceled();
+                        break;
+                    case TaskStatus.RanToCompletion:
+                        tcs.SetResult(task.Result);
+                        Con.WriteLine($"[TaskStatus.RanToCompletion({task.Result})]");
+                        break;
+                    case TaskStatus.Faulted:
+                        // SetException will automatically wrap the original AggregateException
+                        // in another one. The new wrapper will be removed in TaskAwaiter, leaving
+                        // the original intact.
+                        Con.WriteLine($"[TaskStatus.Faulted: {task.Exception?.Message}]");
+                        tcs.SetException(task.Exception ?? new Exception("empty exception"));
+                        break;
+                    default:
+                        Con.WriteLine($"[TaskStatus: Continuation called illegally.]");
+                        tcs.SetException(new InvalidOperationException("Continuation called illegally."));
+                        break;
+                }
+            });
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Task.Factory.StartNew (() => { throw null; }).IgnoreExceptions();
+        /// </summary>
+        public static void IgnoreExceptions(this Task task, bool logEx = false)
+        {
+            task.ContinueWith(t =>
+            {
+                AggregateException ignore = t.Exception ?? new AggregateException("empty aggregate exception");
+
+                ignore?.Flatten().Handle(ex =>
+                {
+                    if (logEx)
+                        App.WriteToLog($"Type: {ex.GetType()}, Message: {ex.Message}");
+                    return true; // don't re-throw
+                });
+
+            }, TaskContinuationOptions.OnlyOnFaulted);
+        }
+
+        #pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
+        /// <summary>
+        /// Attempts to await on the task and catches exception
+        /// </summary>
+        /// <param name="task">Task to execute</param>
+        /// <param name="onException">What to do when method has an exception</param>
+        /// <param name="continueOnCapturedContext">If the context should be captured.</param>
+        public static async void SafeFireAndForget(this Task task, Action<Exception>? onException = null, bool continueOnCapturedContext = false)
+        #pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
+        {
+            try
+            {
+                await task.ConfigureAwait(continueOnCapturedContext);
+            }
+            catch (Exception ex) when (onException != null)
+            {
+                onException.Invoke(ex);
+            }
+            catch (Exception ex) when (onException == null)
+            {
+                App.WriteToLog($"SafeFireAndForget: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

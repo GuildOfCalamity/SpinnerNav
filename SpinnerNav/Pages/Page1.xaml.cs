@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +15,8 @@ namespace SpinnerNav.Pages
     /// </summary>
     public partial class Page1 : Page, INotifyPropertyChanged
     {
+        CancellationTokenSource _cts = new CancellationTokenSource();
+
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
         {
@@ -74,18 +78,28 @@ namespace SpinnerNav.Pages
         {
             try
             {
+                if (Spin4Visible)
+                {
+                    // User wants to cancel the work.
+                    _cts.Cancel();
+                    return;
+                }
+
                 tbDescription.Text = "Working...";
                 Spin4Visible = true;
 
+                // Create new CTS in the event that user has canceled previous one.
+                _cts = new CancellationTokenSource();
+
                 // Call work method and wait.
-                _ = await Task.Run(() => PerformSomeWork());
+                _ = await Task.Run(() => PerformSomeWork(2000, _cts.Token));
                 tbDescription.Text = "Almost done...";
 
                 // Or, return a value directly to the control.
-                tbDescription.Text = await Task.Run(() => PerformSomeWork());
+                tbDescription.Text = await Task.Run(() => PerformSomeWork(2000, _cts.Token));
 
                 // If not using INotify then we could call our home-brew UI refresh. (not recommended)
-                Extensions.DoEvents(true);
+                //Extensions.DoEvents(true);
             }
             catch (Exception) { }
             finally
@@ -115,10 +129,22 @@ namespace SpinnerNav.Pages
         /// Place-holder method for testing.
         /// </summary>
         /// <param name="msTimeout">time to wait (in milliseconds)</param>
-        string PerformSomeWork(int pause = 2000)
+        string PerformSomeWork(int pause = 2000, CancellationToken token = default)
         {
-            new System.Threading.ManualResetEvent(false).WaitOne(pause); // An over-engineered Thread.Sleep()
-            return $"Finished work at {DateTime.Now.ToLongTimeString()}";
+            int count = 0;
+            while (++count < (pause / 10))
+            {
+                if (token.IsCancellationRequested)
+                    break;
+
+                //new System.Threading.ManualResetEvent(false).WaitOne(10); // An over-engineered Thread.Sleep()
+                Thread.Sleep(10);
+            }
+
+            if (token.IsCancellationRequested)
+                return $"Canceled work at {DateTime.Now.ToLongTimeString()}";
+            else
+                return $"Finished work at {DateTime.Now.ToLongTimeString()}";
         }
     }
 }

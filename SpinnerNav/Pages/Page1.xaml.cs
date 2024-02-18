@@ -85,7 +85,7 @@ namespace SpinnerNav.Pages
                     return;
                 }
 
-                tbDescription.Text = "Working...";
+                MainWindow.GlobalEB.Publish("EB_Popup", "Working...");
                 Spin4Visible = true;
 
                 // Create new CTS in the event that user has canceled previous one.
@@ -93,10 +93,10 @@ namespace SpinnerNav.Pages
 
                 // Call work method and wait.
                 _ = await Task.Run(() => PerformSomeWork(2000, _cts.Token));
-                tbDescription.Text = "Almost done...";
+                MainWindow.GlobalEB.Publish("EB_Popup", "Almost done...");
 
-                // Or, return a value directly to the control.
-                tbDescription.Text = await Task.Run(() => PerformSomeWork(2000, _cts.Token));
+                var done = await Task.Run(() => PerformSomeWork(2000, _cts.Token));
+                MainWindow.GlobalEB.Publish("EB_Popup", done);
 
                 // If not using INotify then we could call our home-brew UI refresh. (not recommended)
                 //Extensions.DoEvents(true);

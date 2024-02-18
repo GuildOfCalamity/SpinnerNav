@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,6 +20,13 @@ namespace SpinnerNav
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         IntPtr _winHandle = IntPtr.Zero;
+        const double _popStay = 1.8;
+        System.Windows.Threading.DispatcherTimer _popTimer = null;
+        static EventBus _eventBus = new EventBus();
+        public static EventBus GlobalEB
+        {
+            get => _eventBus;
+        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
@@ -41,25 +49,80 @@ namespace SpinnerNav
             }
         }
 
-        private bool isVisible = true;
-        public bool IsVisible
+        private string _popupMessage = string.Empty;
+        public string PopupMessage
         {
-            get => isVisible;
+            get => _popupMessage;
             set
             {
-                if (isVisible != value)
+                _popupMessage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _showPopup = false;
+        public bool ShowPopup
+        {
+            get => _showPopup;
+            set
+            {
+                if (_showPopup != value)
                 {
-                    isVisible = value;
+                    _showPopup = value;
                     OnPropertyChanged();
                 }
             }
         }
+
+        private int _maxPopupWidth = 650;
+        public int MaxPopupWidth
+        {
+            get => _maxPopupWidth;
+            set
+            {
+                if (_maxPopupWidth != value)
+                {
+                    _maxPopupWidth = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _maxPopupHeight = 50;
+        public int MaxPopupHeight
+        {
+            get => _maxPopupHeight;
+            set
+            {
+                if (_maxPopupHeight != value)
+                {
+                    _maxPopupHeight = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = this;
             this.Title = App.GetCurrentNamespace();
+            if (!_eventBus.IsSubscribed("EB_Popup"))
+                _eventBus.Subscribe("EB_Popup", EventBusHandlerMethod);
+        }
+
+        /// <summary>
+        /// For <see cref="EventBus"/> demonstration.
+        /// </summary>
+        void EventBusHandlerMethod(object? sender, ObjectEventArgs e)
+        {
+            if (e.Payload == null)
+                DisplayPopupMessage($"Received null object event!");
+            else if (e.Payload.GetType() == typeof(System.String))
+                DisplayPopupMessage($"{e.Payload}");
+            else
+                DisplayPopupMessage($"Received event bus message of type: {e.Payload.GetType()}");
         }
 
         /// <summary>
@@ -108,6 +171,7 @@ namespace SpinnerNav
                         SvgData = Geometry.Parse("M14.814.111A.5.5 0 0 1 15 .5V7H7V1.596L14.395.01a.5.5 0 0 1 .42.1M6 1.81L.395 3.011A.5.5 0 0 0 0 3.5V7h6zM0 8v4.5a.5.5 0 0 0 .43.495l5.57.796V8zm7 5.934l7.43 1.061A.5.5 0 0 0 15 14.5V8H7z");
                         break;
                 }
+                DisplayPopupMessage($"Navigated to page {(sidebar.SelectedIndex + 1)}");
                 #endregion
             }
         }
@@ -172,6 +236,64 @@ namespace SpinnerNav
                 Extensions.ShowDialogThreadSafe($"NavigateTo: {ex.Message}", isWarning: true, nonModal: false, imagePath: "AppLogo.png");
             }
         }
+
+        #region [Popup Methods]
+        /// <summary>
+        /// Shows the <see cref="System.Windows.Controls.Primitives.Popup"/>
+        /// using the contents of <see cref="PopupMessage"/>.
+        /// </summary>
+        public void DisplayPopupMessage(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            // Restart the process if another request comes in.
+            if (_popTimer != null)
+            {
+                _popTimer.Stop();
+                mainPopup.IsOpen = false;
+            }
+
+            PopupMessage = $"{message}";
+            ShowPopup = true;
+        }
+
+        /// <summary>
+        /// <see cref="System.Windows.Controls.Primitives.Popup"/> event.
+        /// </summary>
+        void mainPopup_Opened(object sender, EventArgs e)
+        {
+            if (_popTimer == null)
+            {
+                _popTimer = new System.Windows.Threading.DispatcherTimer();
+                _popTimer.Interval = TimeSpan.FromSeconds(_popStay);
+                _popTimer.Tick += popTimer_Tick;
+                _popTimer.Start();
+            }
+            else
+            {
+                //_popTimer.Stop();
+                //_popTimer.Interval = TimeSpan.FromSeconds(popupStay);
+                if (!_popTimer.IsEnabled)
+                    _popTimer.Start();
+            }
+        }
+
+        /// <summary>
+        /// <see cref="System.Windows.Controls.Primitives.Popup"/> event.
+        /// </summary>
+        void mainPopup_Closed(object sender, EventArgs e)
+        {
+            Debug.WriteLine($"[INFO] Popup close event.");
+        }
+
+        void popTimer_Tick(object? sender, EventArgs e)
+        {
+            Debug.WriteLine($"[INFO] Firing popup timer event.");
+            mainPopup.IsOpen = false;
+            _popTimer.Stop();
+        }
+        #endregion
     }
 }
   

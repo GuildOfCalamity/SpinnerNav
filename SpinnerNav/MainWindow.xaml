@@ -20,6 +20,10 @@
             <ColumnDefinition Width="50" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="9*" />
+        </Grid.RowDefinitions>
 
         <!--
             [Old Windows Icon]
@@ -58,6 +62,7 @@
 
         <ListBox
             x:Name="sidebar"
+            Grid.RowSpan="99"
             Grid.Column="0"
             Margin="0,50,0,2"
             Background="#252530"
@@ -128,11 +133,59 @@
                 NavLink="/Pages/Page11.xaml" />
         </ListBox>
 
+        <!--  Content Holder  -->
         <Frame
             x:Name="frmNav"
+            Grid.RowSpan="99"
             Grid.Column="1"
             Background="#202025"
             NavigationUIVisibility="Hidden" />
+
+
+        <!--  Popup Dialog  -->
+        <Grid
+            Grid.Row="0"
+            Grid.Column="1"
+            Margin="1,35,1,1">
+            <Popup
+                Name="mainPopup"
+                Width="{Binding MaxPopupWidth, UpdateSourceTrigger=PropertyChanged}"
+                Height="{Binding MaxPopupHeight, UpdateSourceTrigger=PropertyChanged}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                AllowsTransparency="True"
+                Closed="mainPopup_Closed"
+                IsOpen="{Binding ShowPopup, UpdateSourceTrigger=PropertyChanged}"
+                Opened="mainPopup_Opened"
+                Placement="Center"
+                PopupAnimation="Fade"
+                StaysOpen="True">
+                <Border
+                    Background="#80252525"
+                    BorderBrush="#80959595"
+                    BorderThickness="2"
+                    CornerRadius="10">
+                    <TextBlock
+                        MaxWidth="{Binding MaxPopupWidth, UpdateSourceTrigger=PropertyChanged}"
+                        MaxHeight="{Binding MaxPopupHeight, UpdateSourceTrigger=PropertyChanged}"
+                        Margin="2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="18"
+                        Foreground="#E0E0E0"
+                        Text="{Binding PopupMessage, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap">
+                        <TextBlock.Effect>
+                            <DropShadowEffect
+                                BlurRadius="3"
+                                Opacity="0.8"
+                                ShadowDepth="4"
+                                Color="Black" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Border>
+            </Popup>
+        </Grid>
 
     </Grid>
 </Window>

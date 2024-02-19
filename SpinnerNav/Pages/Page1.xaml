@@ -27,7 +27,10 @@
             </Style.Triggers>
         </Style>
     </Page.Style>
-    <Grid Background="#202025" MouseDown="Grid_MouseDown">
+    <Grid
+        root:AnimateBlurInProperty.Value="{Binding DimmableOverlayVisible, UpdateSourceTrigger=PropertyChanged}"
+        Background="#202025"
+        MouseDown="Grid_MouseDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
@@ -108,7 +111,7 @@
         <!--#endregion [FontAwesome Resource Font Test]-->
 
         <!--  https://icon-sets.iconify.design/material-symbols/  -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" root:AnimateSlideInFromRightMarginProperty.Value="{Binding PerformSlide, UpdateSourceTrigger=PropertyChanged}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />

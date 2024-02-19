@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 
 using SpinnerNav.Controls;
@@ -19,20 +20,21 @@ namespace SpinnerNav
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        IntPtr _winHandle = IntPtr.Zero;
-        const double _popStay = 1.8;
-        System.Windows.Threading.DispatcherTimer _popTimer = null;
-        static EventBus _eventBus = new EventBus();
-        public static EventBus GlobalEB
-        {
-            get => _eventBus;
-        }
-
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
         {
             if (!string.IsNullOrEmpty(propertyName))
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #region [Props]
+        IntPtr _winHandle = IntPtr.Zero;
+        const double _popStay = 2.1;
+        System.Windows.Threading.DispatcherTimer? _popTimer = null;
+        static EventBus _eventBus = new EventBus();
+        public static EventBus GlobalEB
+        {
+            get => _eventBus;
         }
         
         private Geometry svgData = Geometry.Parse("M3 12V6.75l6-1.32v6.48zm17-9v8.75l-10 .15V5.21zM3 13l6 .09v6.81l-6-1.15zm17 .25V22l-10-1.91V13.1z");
@@ -46,6 +48,31 @@ namespace SpinnerNav
                     svgData = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        private Uri _imgIcon = new Uri("/SpinnerNav;component/Assets/Icon_Info.png", UriKind.Relative);
+        public Uri ImgIcon
+        {
+            get => _imgIcon;
+            set
+            {
+                if (_imgIcon != value)
+                {
+                    _imgIcon = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private Color _shadowColor = Colors.DodgerBlue;
+        public Color ShadowColor
+        {
+            get => _shadowColor;
+            set
+            {
+                _shadowColor = value;
+                OnPropertyChanged();
             }
         }
 
@@ -102,27 +129,89 @@ namespace SpinnerNav
             }
         }
 
+        private bool _performFade = false;
+        public bool PerformFade
+        {
+            get => _performFade;
+            set
+            {
+                _performFade = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _performSlide = false;
+        public bool PerformSlide
+        {
+            get => _performSlide;
+            set
+            {
+                _performSlide = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private NavigationUIVisibility _navVisibility = NavigationUIVisibility.Visible;
+        public NavigationUIVisibility NavVisibility
+        {
+            get => _navVisibility;
+            set
+            {
+                _navVisibility = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
 
         public MainWindow()
         {
             InitializeComponent();
             this.DataContext = this;
             this.Title = App.GetCurrentNamespace();
+
+            if (System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+                Debug.WriteLine($"{this.Name}: XAML SYSTEM IS IN DESIGN MODE.");
+            else
+                Debug.WriteLine($"{this.Name}: XAML system is not in design mode.");
+
+            // The EventBus provides a way for other pages to push notifications back to the MainWindow. Currently this is used for the popup dialog.
+            // The other approach would be to use a "Monolithic ViewModel" and have every page share one MainViewModel.
+            // https://www.atlassian.com/microservices/microservices-architecture/microservices-vs-monolith
             if (!_eventBus.IsSubscribed("EB_Popup"))
                 _eventBus.Subscribe("EB_Popup", EventBusHandlerMethod);
         }
 
+        public void NavigateTo(int page = 1)
+        {
+            try
+            {
+                frmNav.Navigate(new Uri($"/Pages/Page{page}.xaml", UriKind.Relative));
+            }
+            catch (Exception ex)
+            {
+                Extensions.ShowDialogThreadSafe($"NavigateTo: {ex.Message}", isWarning: true, nonModal: false, imagePath: "AppLogo.png");
+            }
+        }
+
+        public void ClearNavHistory()
+        {
+            frmNav.NavigationService.Refresh();
+        }
+
+        #region [Events]
         /// <summary>
         /// For <see cref="EventBus"/> demonstration.
         /// </summary>
         void EventBusHandlerMethod(object? sender, ObjectEventArgs e)
         {
             if (e.Payload == null)
-                DisplayPopupMessage($"Received null object event!");
+                DisplayPopupMessage($"Received null object event!", MessageLevel.Warning);
             else if (e.Payload.GetType() == typeof(System.String))
-                DisplayPopupMessage($"{e.Payload}");
+                DisplayPopupMessage($"{e.Payload}", MessageLevel.Attention);
+            else if (e.Payload.GetType() == typeof(System.Exception))
+                DisplayPopupMessage($"ERROR: {((Exception)e.Payload).Message}", MessageLevel.Error);
             else
-                DisplayPopupMessage($"Received event bus message of type: {e.Payload.GetType()}");
+                DisplayPopupMessage($"Received event bus message of type: {e.Payload.GetType()}", MessageLevel.Info);
         }
 
         /// <summary>
@@ -171,12 +260,11 @@ namespace SpinnerNav
                         SvgData = Geometry.Parse("M14.814.111A.5.5 0 0 1 15 .5V7H7V1.596L14.395.01a.5.5 0 0 1 .42.1M6 1.81L.395 3.011A.5.5 0 0 0 0 3.5V7h6zM0 8v4.5a.5.5 0 0 0 .43.495l5.57.796V8zm7 5.934l7.43 1.061A.5.5 0 0 0 15 14.5V8H7z");
                         break;
                 }
-                DisplayPopupMessage($"Navigated to page {(sidebar.SelectedIndex + 1)}");
+                DisplayPopupMessage($"Navigated to page {(sidebar.SelectedIndex + 1)}", MessageLevel.Info);
                 #endregion
             }
         }
 
-        #region [Dark Title Bar]
         void Window_Initialized(object sender, EventArgs e)
         {
             // Required for the dark title bar.
@@ -195,6 +283,7 @@ namespace SpinnerNav
 
             try
             {
+                #region [Dark Title Bar]
                 // Get some dark title bar.
                 if (e.Source is Window wnd)
                 {
@@ -207,10 +296,12 @@ namespace SpinnerNav
 
                     wnd.WindowState = WindowState.Normal;
                 }
+                #endregion
 
                 // Auto-navigate to page #1.
                 Task.Run(async () =>
                 {
+                    PerformFade = true;
                     await Task.Delay(600);
                     Extensions.RunOnUIThread(() =>
                     {
@@ -225,24 +316,12 @@ namespace SpinnerNav
         }
         #endregion
 
-        public void NavigateTo(int page = 1)
-        {
-            try
-            {
-                frmNav.Navigate(new Uri($"/Pages/Page{page}.xaml", UriKind.Relative));
-            }
-            catch (Exception ex)
-            {
-                Extensions.ShowDialogThreadSafe($"NavigateTo: {ex.Message}", isWarning: true, nonModal: false, imagePath: "AppLogo.png");
-            }
-        }
-
         #region [Popup Methods]
         /// <summary>
         /// Shows the <see cref="System.Windows.Controls.Primitives.Popup"/>
         /// using the contents of <see cref="PopupMessage"/>.
         /// </summary>
-        public void DisplayPopupMessage(string message)
+        public void DisplayPopupMessage(string message, MessageLevel level = MessageLevel.Info)
         {
             if (string.IsNullOrEmpty(message))
                 return;
@@ -250,10 +329,33 @@ namespace SpinnerNav
             // Restart the process if another request comes in.
             if (_popTimer != null)
             {
-                _popTimer.Stop();
+                _popTimer?.Stop();
                 mainPopup.IsOpen = false;
             }
 
+            switch (level)
+            {
+                case MessageLevel.Info:
+                    ShadowColor = Colors.DodgerBlue;
+                    break;
+                case MessageLevel.Attention:
+                    ShadowColor = Colors.MediumPurple;
+                    break;
+                case MessageLevel.Warning:
+                    ShadowColor = Colors.Orange;
+                    break;
+                case MessageLevel.Error:
+                    ShadowColor = Colors.Crimson;
+                    break;
+                case MessageLevel.Success:
+                    ShadowColor = Colors.SpringGreen;
+                    break;
+                default:
+                    ShadowColor = Colors.DodgerBlue;
+                    break;
+            }
+
+            ImgIcon = new Uri($"/SpinnerNav;component/Assets/Icon_{level}.png", UriKind.Relative);
             PopupMessage = $"{message}";
             ShowPopup = true;
         }
@@ -272,10 +374,8 @@ namespace SpinnerNav
             }
             else
             {
-                //_popTimer.Stop();
-                //_popTimer.Interval = TimeSpan.FromSeconds(popupStay);
                 if (!_popTimer.IsEnabled)
-                    _popTimer.Start();
+                    _popTimer?.Start();
             }
         }
 
@@ -291,7 +391,44 @@ namespace SpinnerNav
         {
             Debug.WriteLine($"[INFO] Firing popup timer event.");
             mainPopup.IsOpen = false;
-            _popTimer.Stop();
+            _popTimer?.Stop();
+        }
+        #endregion
+
+        #region [Sliding Dialog]
+        /// <summary>
+        /// Shows the info bar style text box.
+        /// using the contents of <see cref="PopupMessage"/>.
+        /// </summary>
+        public void DisplaySlideMessage(string message)
+        {
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            // Restart the process if another request comes in.
+            if (_popTimer != null)
+            {
+                _popTimer?.Stop();
+                //PerformSlide = false;
+                _popTimer?.Start();
+            }
+            else
+            {
+                _popTimer = new System.Windows.Threading.DispatcherTimer();
+                _popTimer.Interval = TimeSpan.FromSeconds(_popStay);
+                _popTimer.Tick += msgTimer_Tick;
+                _popTimer.Start();
+            }
+
+            PopupMessage = $"{message}";
+            PerformSlide = true;
+        }
+
+        void msgTimer_Tick(object? sender, EventArgs e)
+        {
+            Debug.WriteLine($"[INFO] Firing popup timer event.");
+            _popTimer?.Stop();
+            PerformSlide = false;
         }
         #endregion
     }

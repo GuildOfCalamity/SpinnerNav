@@ -16,6 +16,15 @@ using System.Threading;
 
 namespace SpinnerNav.Support
 {
+    public enum MessageLevel
+    {
+        Info = 1,
+        Attention = 2,
+        Success = 3,
+        Warning = 4,
+        Error = 5,
+    }
+
     public static class Extensions
     {
         private static readonly WeakReference s_random = new WeakReference(null);

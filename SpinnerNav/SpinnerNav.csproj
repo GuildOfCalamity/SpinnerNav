@@ -17,11 +17,21 @@
 
   <ItemGroup>
     <None Remove="AppLogo.png" />
+    <None Remove="Assets\Icon_Attention.png" />
+    <None Remove="Assets\Icon_Error.png" />
+    <None Remove="Assets\Icon_Info.png" />
+    <None Remove="Assets\Icon_Success.png" />
+    <None Remove="Assets\Icon_Warning.png" />
     <None Remove="Fonts\fontawesome-webfont.ttf" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="AppLogo.ico" />
+    <Resource Include="Assets\Icon_Attention.png" />
+    <Resource Include="Assets\Icon_Error.png" />
+    <Resource Include="Assets\Icon_Info.png" />
+    <Resource Include="Assets\Icon_Success.png" />
+    <Resource Include="Assets\Icon_Warning.png" />
   </ItemGroup>
 
   <ItemGroup>

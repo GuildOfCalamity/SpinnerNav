@@ -61,12 +61,12 @@ namespace SpinnerNav
         /// <summary>
         /// Causes an event to be invoked through the handler pool.
         /// </summary>
-        public void Publish(string eventName, object? message)
+        public void Publish(string eventName, object? payload)
         {
             if (!string.IsNullOrEmpty(eventName) && eventHandlers.ContainsKey(eventName))
             {
                 EventHandler<ObjectEventArgs>? handlers = eventHandlers[eventName];
-                handlers?.Invoke(this, new ObjectEventArgs(message));
+                handlers?.Invoke(this, new ObjectEventArgs(payload));
             }
             else
             {

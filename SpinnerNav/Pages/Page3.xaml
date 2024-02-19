@@ -70,6 +70,7 @@
             <!--  https://icon-sets.iconify.design/material-symbols/  -->
             <root:SpinButtonControl
                 Grid.Column="0"
+                Opacity="0.8"
                 SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="100"
@@ -79,6 +80,7 @@
                 SpinWidth="100" />
             <root:SpinButtonControl
                 Grid.Column="0"
+                Opacity="0.8"
                 SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="80"
@@ -88,6 +90,7 @@
                 SpinWidth="80" />
             <root:SpinButtonControl
                 Grid.Column="0"
+                Opacity="0.8"
                 SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="60"

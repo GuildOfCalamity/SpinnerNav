@@ -80,6 +80,7 @@
 
             <root:SpinButtonControl
                 Grid.Column="1"
+                Opacity="0.8"
                 SpinBrush="DodgerBlue"
                 SpinClockwise="True"
                 SpinHeight="100"
@@ -89,6 +90,7 @@
                 SpinWidth="100" />
             <root:SpinButtonControl
                 Grid.Column="1"
+                Opacity="0.8"
                 SpinBrush="DodgerBlue"
                 SpinClockwise="False"
                 SpinHeight="100"

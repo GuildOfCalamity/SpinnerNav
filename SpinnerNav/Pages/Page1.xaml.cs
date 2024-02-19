@@ -1,11 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using SpinnerNav.Support;
 
 namespace SpinnerNav.Pages
@@ -15,14 +17,15 @@ namespace SpinnerNav.Pages
     /// </summary>
     public partial class Page1 : Page, INotifyPropertyChanged
     {
-        CancellationTokenSource _cts = new CancellationTokenSource();
-
         public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
         {
             if (!string.IsNullOrEmpty(propertyName))
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #region [Props]
+        CancellationTokenSource _cts = new CancellationTokenSource();
 
         private bool spin1Visible = true;
         public bool Spin1Visible
@@ -68,11 +71,48 @@ namespace SpinnerNav.Pages
             }
         }
 
+        #region [Animation Properties]
+        private bool _dimmableOverlayVisible = false;
+        public bool DimmableOverlayVisible
+        {
+            get => _dimmableOverlayVisible;
+            set
+            {
+                _dimmableOverlayVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _performSlide = true;
+        public bool PerformSlide
+        {
+            get => _performSlide;
+            set
+            {
+                _performSlide = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+        #endregion
+
         public Page1()
         {
             InitializeComponent();
+            this.KeepAlive = true; //this.NavigationCacheMode = NavigationCacheMode.Required;
             this.DataContext = this;
         }
+
+        /// <summary>
+        /// Test for page caching.
+        /// </summary>
+        //protected override void OnNavigatedTo(NavigationEventArgs e)
+        //{
+        //    if (e.NavigationMode == NavigationMode.Back)
+        //    {
+        //        // Load previous state.
+        //    }
+        //}
 
         async void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -80,13 +120,15 @@ namespace SpinnerNav.Pages
             {
                 if (Spin4Visible)
                 {
+                    DimmableOverlayVisible = false;
                     // User wants to cancel the work.
                     _cts.Cancel();
                     return;
                 }
 
+                PerformSlide = false;
                 MainWindow.GlobalEB.Publish("EB_Popup", "Working...");
-                Spin4Visible = true;
+                Spin4Visible = DimmableOverlayVisible = true;
 
                 // Create new CTS in the event that user has canceled previous one.
                 _cts = new CancellationTokenSource();
@@ -101,10 +143,14 @@ namespace SpinnerNav.Pages
                 // If not using INotify then we could call our home-brew UI refresh. (not recommended)
                 //Extensions.DoEvents(true);
             }
-            catch (Exception) { }
+            catch (Exception ex) 
+            {
+                MainWindow.GlobalEB.Publish("EB_Popup", ex);
+            }
             finally
             {
-                Spin4Visible = false;
+                Spin4Visible = DimmableOverlayVisible = false;
+                PerformSlide = true;
             }
         }
 
@@ -131,14 +177,21 @@ namespace SpinnerNav.Pages
         /// <param name="msTimeout">time to wait (in milliseconds)</param>
         string PerformSomeWork(int pause = 2000, CancellationToken token = default)
         {
-            int count = 0;
-            while (++count < (pause / 10))
+            try
             {
-                if (token.IsCancellationRequested)
-                    break;
+                int count = 0;
+                while (++count < (pause / 10))
+                {
+                    if (token.IsCancellationRequested)
+                        break;
 
-                //new System.Threading.ManualResetEvent(false).WaitOne(10); // An over-engineered Thread.Sleep()
-                Thread.Sleep(10);
+                    //new System.Threading.ManualResetEvent(false).WaitOne(10); // An over-engineered Thread.Sleep()
+                    Thread.Sleep(10);
+                }
+            }
+            catch (Exception ex)
+            {
+                MainWindow.GlobalEB.Publish("EB_Popup", ex);
             }
 
             if (token.IsCancellationRequested)

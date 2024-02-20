@@ -13,6 +13,7 @@ using Path = System.IO.Path;
 using Con = System.Diagnostics.Debug;
 using System.Windows.Threading;
 using System.Threading;
+using System.IO;
 
 namespace SpinnerNav.Support
 {
@@ -244,6 +245,33 @@ namespace SpinnerNav.Support
 
             var img = (BitmapSource)(imgControl.Source);
             imgControl.Source = new FormatConvertedBitmap(img, PixelFormats.Gray8, BitmapPalettes.Gray256, alphaThresh);
+        }
+
+        /// <summary>
+        /// Image helper method
+        /// </summary>
+        /// <param name="UriPath"></param>
+        /// <returns><see cref="BitmapFrame"/></returns>
+        public static BitmapFrame? GetBitmapFrame(string UriPath)
+        {
+            try
+            {
+                IconBitmapDecoder ibd = new IconBitmapDecoder(new Uri(UriPath,
+                    UriKind.RelativeOrAbsolute),
+                    BitmapCreateOptions.None,
+                    BitmapCacheOption.Default);
+                return ibd.Frames[0];
+            }
+            catch (FileNotFoundException ex)
+            {
+                Con.WriteLine($"GetBitmapFrame(NotFoundException): {ex.Message}");
+                return null;
+            }
+            catch (FileFormatException ex)
+            {
+                Con.WriteLine($"GetBitmapFrame(FormatException): {ex.Message}");
+                return null;
+            }
         }
 
         /// <summary>

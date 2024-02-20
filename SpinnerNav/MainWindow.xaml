@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:root="clr-namespace:SpinnerNav"
     xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
+    x:Name="wndMain"
     Title="MainWindow"
     Width="950"
     Height="550"
@@ -610,7 +611,7 @@
         <!--#endregion [Navigation UI Bar]-->
     </Window.Resources>
 
-    <Grid Background="#252530">
+    <Grid Background="{StaticResource SecondaryBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50" />
             <ColumnDefinition />
@@ -634,6 +635,7 @@
             [New Windows Icon - without angle, rounded]
             Data="M11 11V3H5c-1.1 0-2 .9-2 2v6zm2 0h8V5c0-1.1-.9-2-2-2h-6zm-2 2H3v6c0 1.1.9 2 2 2h6zm2 0v8h6c1.1 0 2-.9 2-2v-6z"
         -->
+
 
         <!--
         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
@@ -660,7 +662,7 @@
             Grid.Column="0"
             Margin="0,50,0,2"
             root:AnimateFadeInProperty.Value="{Binding PerformFade, UpdateSourceTrigger=PropertyChanged}"
-            Background="#252530"
+            Background="{StaticResource SecondaryBrush}"
             BorderThickness="0"
             ScrollViewer.HorizontalScrollBarVisibility="Hidden"
             ScrollViewer.VerticalScrollBarVisibility="Hidden"
@@ -668,7 +670,6 @@
             SelectionMode="Single">
             <!--
                 https://icon-sets.iconify.design/oi/
-                https://icon-sets.iconify.design/material-symbols/
             -->
             <ctrl:NavigationItem
                 Margin="3"
@@ -705,21 +706,25 @@
                 Padding="6"
                 NavIcon="M3.34 0L2 2H0v4h2l1.34 2H4V0zM5 1v1c.17 0 .34.02.5.06c.86.22 1.5 1 1.5 1.94a1.987 1.987 0 0 1-2 2v1c.25 0 .48-.04.72-.09h.03C7.05 6.58 8 5.4 8 4c0-1.4-.95-2.58-2.25-2.91C5.52 1.03 5.26 1 5 1m0 2v2c.09 0 .18-.01.25-.03c.43-.11.75-.51.75-.97a.997.997 0 0 0-1-1"
                 NavLink="/Pages/Page7.xaml" />
+            <!--  https://icon-sets.iconify.design/oi/  -->
             <ctrl:NavigationItem
                 Margin="3"
                 Padding="6"
                 NavIcon="M224 44H32a12 12 0 0 0-12 12v136a20 20 0 0 0 20 20h176a20 20 0 0 0 20-20V56a12 12 0 0 0-12-12m-30.85 24L128 127.72L62.85 68ZM44 188V83.28l75.89 69.57a12 12 0 0 0 16.22 0L212 83.28V188Z"
                 NavLink="/Pages/Page8.xaml" />
+            <!--  https://icon-sets.iconify.design/material-symbols/  -->
             <ctrl:NavigationItem
                 Margin="3"
                 Padding="6"
                 NavIcon="M6 14h8v-2H6zm0-3h12V9H6zm0-3h12V6H6zM2 22V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18H6zm3.15-6H20V4H4v13.125zM4 16V4z"
                 NavLink="/Pages/Page9.xaml" />
+            <!--  https://icon-sets.iconify.design/material-symbols/  -->
             <ctrl:NavigationItem
                 Margin="3"
                 Padding="6"
                 NavIcon="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396l1.414-1.414l-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8s3.589 8 8 8m0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6s-6-2.691-6-6s2.691-6 6-6 M11.412 8.586c.379.38.588.882.588 1.414h2a3.977 3.977 0 0 0-1.174-2.828c-1.514-1.512-4.139-1.512-5.652 0l1.412 1.416c.76-.758 2.07-.756 2.826-.002"
                 NavLink="/Pages/Page10.xaml" />
+            <!--  https://icon-sets.iconify.design/material-symbols/  -->
             <ctrl:NavigationItem
                 Margin="3"
                 Padding="6"
@@ -727,17 +732,35 @@
                 NavLink="/Pages/Page11.xaml" />
         </ListBox>
 
+        <Button
+            Grid.Row="1"
+            Grid.Column="0"
+            Width="36"
+            Height="36"
+            Margin="0,0,0,4"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            BorderThickness="0"
+            Command="{Binding LogViewCommand, UpdateSourceTrigger=PropertyChanged}"
+            CommandParameter="{x:Reference Name=wndMain}"
+            Content="&#xf02d;"
+            FontFamily="{StaticResource FontAwesome}"
+            FontSize="90"
+            Style="{StaticResource GrowButton}"
+            ToolTip="Open log" />
+
         <!--  Content Holder  -->
         <Frame
             x:Name="frmNav"
             Grid.RowSpan="99"
             Grid.Column="1"
-            Background="#202025"
+            Background="{StaticResource SecondaryBrush}"
             NavigationUIVisibility="{Binding NavVisibility, UpdateSourceTrigger=PropertyChanged, FallbackValue=Hidden}"
             Style="{DynamicResource NavFrameStyle}" />
         <!--
-            [NOTE: How to style default Navigation UI Bar]
-            1) Open the document outline window. (from the VisualStudio Toolbar: View => Other Windows => Document Outline)
+            https://stackoverflow.com/questions/53365254/how-to-style-default-navigationui
+            [How to style default NavigationUI]
+            1) Open the document outline window. (From the Visual Studio Toolbar: View => Other Windows => Document Outline)
             2) In the Document Outline window right click on the frame to display a context menu.
             3) Select from the context menu: Edit Template => Edit a Copy...
             4) Press OK on the Create Style Resource window.
@@ -790,7 +813,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             FontSize="18"
-                            Foreground="WhiteSmoke"
+                            Foreground="{StaticResource PrimaryBrush}"
                             Text="{Binding PopupMessage, UpdateSourceTrigger=PropertyChanged}"
                             TextWrapping="Wrap">
                             <TextBlock.Effect>
@@ -824,7 +847,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="16"
-                    Foreground="#E0E0E0"
+                    Foreground="{StaticResource PrimaryBrush}"
                     Text="{Binding PopupMessage, UpdateSourceTrigger=PropertyChanged}"
                     TextWrapping="Wrap">
                     <TextBlock.Effect>

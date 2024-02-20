@@ -10,6 +10,33 @@
 
             <FontFamily x:Key="FontAwesome">pack://application;,,,/Fonts/#FontAwesome</FontFamily>
 
+            <Color x:Key="Primary">#d5d5ea</Color>
+            <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}" />
+            <Color x:Key="Secondary">#25252a</Color>
+            <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}" />
+
+            <LinearGradientBrush x:Key="buttonDark" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#FF444444" />
+                <GradientStop Offset="1.0" Color="#FF222222" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="buttonMedium" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#FF555555" />
+                <GradientStop Offset="1.0" Color="#FF333333" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="buttonOver" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#FF222222" />
+                <GradientStop Offset="1.0" Color="#FF444444" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="buttonPress" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#FFEDEDED" />
+                <GradientStop Offset="1.0" Color="#FFEEEEEE" />
+            </LinearGradientBrush>
+            <LinearGradientBrush x:Key="buttonLight" StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Offset="0.0" Color="#FF8D8D8D" />
+                <GradientStop Offset="1.0" Color="#FFEEEEEE" />
+            </LinearGradientBrush>
+
+
             <!--#region [TextBlock Styler (specific for font use)]-->
             <Style x:Key="SpinningText" TargetType="{x:Type TextBlock}">
                 <Setter Property="FontFamily" Value="{StaticResource FontAwesome}" />
@@ -190,6 +217,183 @@
                 </Style.Triggers>
             </Style>
             <!--#endregion [Animated Button using Path]-->
+
+            <!--#region [Animated Button using Storyboard]-->
+            <Style x:Key="GrowButton" TargetType="{x:Type Button}">
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{StaticResource buttonLight}" />
+                <Setter Property="BorderThickness" Value="{Binding BorderThickness, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="FontSize" Value="{Binding FontSize, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="FontFamily" Value="{Binding FontFamily, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Padding" Value="7,2" />
+                <Setter Property="Margin" Value="0" />
+                <Setter Property="Width" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <!--
+                            Right-Click on button in designer and select 'Edit Template' then
+                            'Edit a Copy'. Take that ControlTemplate code and paste in here...
+                        -->
+                        <ControlTemplate TargetType="{x:Type ButtonBase}">
+                            <Border
+                                x:Name="border"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4"
+                                SnapsToDevicePixels="True">
+                                <!--  Add a render scale transform  -->
+                                <Border.RenderTransform>
+                                    <ScaleTransform />
+                                </Border.RenderTransform>
+                                <!--  Start from the middle  -->
+                                <Border.RenderTransformOrigin>
+                                    <Point X="0.5" Y="0.5" />
+                                </Border.RenderTransformOrigin>
+                                <Grid>
+                                    <!--
+                                        This ViewBox allows us to set the padding/margin to
+                                        whatever we want and the text will always be visible.
+                                    -->
+                                    <Viewbox>
+                                        <TextBlock
+                                            x:Name="icontext"
+                                            Margin="{TemplateBinding Padding}"
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            Focusable="False"
+                                            FontFamily="{TemplateBinding FontFamily}"
+                                            FontSize="{TemplateBinding FontSize}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            Text="{TemplateBinding Content}">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect
+                                                    BlurRadius="2"
+                                                    Opacity="0.7"
+                                                    ShadowDepth="1"
+                                                    Color="#C099AABB" />
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                    </Viewbox>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                To="1.15"
+                                                Duration="0:0:0.07" />
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                To="1.15"
+                                                Duration="0:0:0.07" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                To="1"
+                                                Duration="0:0:0.07" />
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                To="1"
+                                                Duration="0:0:0.07" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <!--
+                                <EventTrigger RoutedEvent="Click">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                AutoReverse="True"
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                To="0.7"
+                                                Duration="0:0:0.1" />
+                                            <DoubleAnimation
+                                                AutoReverse="True"
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                To="0.7"
+                                                Duration="0:0:0.1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                -->
+                                <EventTrigger RoutedEvent="PreviewMouseDown">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                To="0.85"
+                                                Duration="0:0:0.07" />
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                To="0.85"
+                                                Duration="0:0:0.07" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="PreviewMouseUp">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                To="1"
+                                                Duration="0:0:0.07" />
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="border"
+                                                Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                To="1"
+                                                Duration="0:0:0.07" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="BitmapEffect">
+                                        <Setter.Value>
+                                            <DropShadowBitmapEffect
+                                                Opacity="0.7"
+                                                ShadowDepth="1"
+                                                Softness="2"
+                                                Color="#C0AACCFF" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                                <!-- Previous stuff, before animation was added...
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource WordBlueBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource WordDeepBlueBrush}" />
+                                </Trigger>
+                                -->
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="icontext" Property="Foreground" Value="{StaticResource buttonDark}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!--#endregion [Animated Button using Storyboard]-->
 
         </ResourceDictionary>
     </Application.Resources>

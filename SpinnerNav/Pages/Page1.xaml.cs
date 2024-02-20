@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media.Effects;
 using System.Windows.Navigation;
 using SpinnerNav.Support;
 
@@ -71,6 +73,18 @@ namespace SpinnerNav.Pages
             }
         }
 
+        private string _expanderText = "Click to show commands";
+        public string ExpanderText
+        {
+            get => _expanderText;
+            set
+            {
+                _expanderText = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
         #region [Animation Properties]
         private bool _dimmableOverlayVisible = false;
         public bool DimmableOverlayVisible
@@ -93,14 +107,56 @@ namespace SpinnerNav.Pages
                 OnPropertyChanged();
             }
         }
+
+        private bool _performMenu = false;
+        public bool PerformMenu
+        {
+            get => _performMenu;
+            set
+            {
+                _performMenu = value;
+                OnPropertyChanged();
+            }
+        }
         #endregion
+
+        #region [Commands]
+        public ICommand Command1 { get; set; }
+        public ICommand Command2 { get; set; }
+        public ICommand Command3 { get; set; }
+        public ICommand Command4 { get; set; }
+        
         #endregion
 
         public Page1()
         {
             InitializeComponent();
-            this.KeepAlive = true; //this.NavigationCacheMode = NavigationCacheMode.Required;
+            
             this.DataContext = this;
+
+            Command1 = new RelayCommand(() => { MainWindow.GlobalEB.Publish("EB_Popup", "Command #1 invoked"); });
+            Command2 = new RelayCommand(() => { MainWindow.GlobalEB.Publish("EB_Popup", "Command #2 invoked"); });
+            Command3 = new AsyncRelayCommand(CallbackSample, (ex) => { MainWindow.GlobalEB.Publish("EB_Popup", ex); });
+            Command4 = new AsyncRelayCommand(CallbackSample, (ex) => { MainWindow.GlobalEB.Publish("EB_Popup", ex); });
+        }
+
+        async Task CallbackSample()
+        {
+            MainWindow.GlobalEB.Publish("EB_Popup", "Started something...");
+            
+            await Task.Delay(2000);
+            
+            if (Extensions.Rnd.Next(1, 10) >= 6)
+                throw new Exception("I'm a fake error, ignore me.");
+
+            MainWindow.GlobalEB.Publish("EB_Popup", "Finished something");
+        }
+
+        async void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            expMenu.IsExpanded = true;
+            await Task.Delay(50);
+            expMenu.Dispatcher.Invoke(() => { expMenu.IsExpanded = false; });
         }
 
         /// <summary>
@@ -198,6 +254,18 @@ namespace SpinnerNav.Pages
                 return $"Canceled work at {DateTime.Now.ToLongTimeString()}";
             else
                 return $"Finished work at {DateTime.Now.ToLongTimeString()}";
+        }
+
+        void Expander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            PerformMenu = false;
+            ExpanderText = "Click to show commands";
+        }
+
+        void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            PerformMenu = true;
+            ExpanderText = "Click to hide commands";
         }
     }
 }

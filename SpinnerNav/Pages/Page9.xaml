@@ -27,7 +27,7 @@
             </Style.Triggers>
         </Style>
     </Page.Style>
-    <Grid Background="#202025">
+    <Grid Background="{StaticResource SecondaryBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
@@ -48,7 +48,7 @@
            HorizontalAlignment="Center"
            VerticalAlignment="Center"
            FontSize="172"
-           Foreground="WhiteSmoke"
+           Foreground="{StaticResource PrimaryBrush}"
            Opacity="0.6"
            Style="{StaticResource SpinningText}"
            Text="&#xf021;" />

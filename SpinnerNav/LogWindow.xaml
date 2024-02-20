@@ -1,0 +1,87 @@
+﻿<Window
+    x:Class="SpinnerNav.LogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SpinnerNav"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="LogWindow"
+    Width="550"
+    Height="300"
+    mc:Ignorable="d">
+
+    <Window.Style>
+        <Style>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Page.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="0.0"
+                                To="1.0"
+                                Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+
+    <Grid Background="{StaticResource SecondaryBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="9*" />
+            <RowDefinition Height="2*" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            Grid.Row="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="20"
+            Foreground="{StaticResource PrimaryBrush}"
+            Text="This is a sample log view window.">
+            <TextBlock.Effect>
+                <DropShadowEffect
+                    BlurRadius="2"
+                    Opacity="0.7"
+                    ShadowDepth="3"
+                    Color="Black" />
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <StackPanel
+            Grid.Row="1"
+            Margin="0,0,0,4"
+            Orientation="Horizontal">
+            <Button
+                x:Name="btnToggle"
+                Width="52"
+                Height="32"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                BorderThickness="0"
+                Click="Button_Click"
+                Content="&#xf205;"
+                FontFamily="{StaticResource FontAwesome}"
+                FontSize="24"
+                Style="{StaticResource GrowButton}"
+                ToolTip="Toggle"
+                Visibility="Visible" />
+            <TextBlock
+                x:Name="tbToggle"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="16"
+                Foreground="{StaticResource PrimaryBrush}"
+                Text="Toggle button example">
+                <TextBlock.Effect>
+                    <DropShadowEffect
+                        BlurRadius="2"
+                        Opacity="0.7"
+                        ShadowDepth="3"
+                        Color="Black" />
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

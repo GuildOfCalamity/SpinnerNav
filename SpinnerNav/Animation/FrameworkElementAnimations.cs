@@ -133,8 +133,13 @@ namespace SpinnerNav
             // Wait for it to finish
             await Task.Delay((int)(seconds * 1000));
 
+            /* 
+                NOTE: This can cause an issue where the previous animation is not finished and the user
+                starts a new animation, the direction reversal works correctly but the fade does not.
+
             // Make element invisible
             element.Visibility = Visibility.Hidden;
+            */
         }
 
         #endregion

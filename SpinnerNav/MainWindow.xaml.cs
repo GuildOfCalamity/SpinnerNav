@@ -168,6 +168,7 @@ namespace SpinnerNav
         public RelayCommand<Window> LogViewCommand { get; set; }
 
         bool _cacheMode = true;
+        readonly int _maxPages = 11;
         readonly Page[] _pages;
 
         public MainWindow()
@@ -185,7 +186,7 @@ namespace SpinnerNav
             // Do we want to save our page states?
             if (_cacheMode)
             {
-                _pages = new Page[11];
+                _pages = new Page[_maxPages];
                 _pages[0] = new Page1();
                 _pages[1] = new Page2();
                 _pages[2] = new Page3();
@@ -221,7 +222,7 @@ namespace SpinnerNav
                     KernelType = KernelType.Gaussian,
                     Radius = 9
                 };
-                var newView = new LogWindow();
+                var newView = new LogWindow(view);
                 newView.Icon = Extensions.GetBitmapFrame(@"pack://application:,,/AppLogo.ico");
                 newView.Owner = view;
                 newView.ShowActivated = true;

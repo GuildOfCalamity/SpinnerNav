@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:SpinnerNav"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="LogWindow"
-    Width="550"
-    Height="300"
+    Width="600"
+    Height="340"
     mc:Ignorable="d">
 
     <Window.Style>
@@ -28,13 +28,226 @@
         </Style>
     </Window.Style>
 
-    <Grid Background="{StaticResource SecondaryBrush}">
+    <Grid Background="{StaticResource SecondaryBrush}" MouseDown="Grid_MouseDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="9*" />
-            <RowDefinition Height="2*" />
+            <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
+        <!--
+            using FontAwesome icon as a toggle control
+        -->
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="36" />
+                <RowDefinition Height="36" />
+                <RowDefinition Height="36" />
+                <RowDefinition Height="36" />
+                <RowDefinition Height="36" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="9*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="btnToggle1"
+                    Width="52"
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Button_Click"
+                    Content="&#xf205;"
+                    FontFamily="{StaticResource FontAwesome}"
+                    FontSize="24"
+                    Style="{StaticResource GrowButton}"
+                    ToolTip="Toggle"
+                    Visibility="Visible" />
+                <TextBlock
+                    x:Name="tbToggle1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    Text="Toggle 1 example">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="2"
+                            Opacity="0.7"
+                            ShadowDepth="3"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="btnToggle2"
+                    Width="52"
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Button_Click"
+                    Content="&#xf204;"
+                    FontFamily="{StaticResource FontAwesome}"
+                    FontSize="24"
+                    Style="{StaticResource GrowButton}"
+                    ToolTip="Toggle"
+                    Visibility="Visible" />
+                <TextBlock
+                    x:Name="tbToggle2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    Text="Toggle 2 example">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="2"
+                            Opacity="0.7"
+                            ShadowDepth="3"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="2"
+                Grid.Column="0"
+                Margin="0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="btnCheckbox1"
+                    Width="52"
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Button_Click"
+                    Content="&#xf046;"
+                    FontFamily="{StaticResource FontAwesome}"
+                    FontSize="24"
+                    Style="{StaticResource GrowButton}"
+                    ToolTip="Toggle"
+                    Visibility="Visible" />
+                <TextBlock
+                    x:Name="tbCheckbox1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    Text="Checkbox 1 example">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="2"
+                            Opacity="0.7"
+                            ShadowDepth="3"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="3"
+                Grid.Column="0"
+                Margin="0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="btnCheckbox2"
+                    Width="52"
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Button_Click"
+                    Content="&#xf046;"
+                    FontFamily="{StaticResource FontAwesome}"
+                    FontSize="24"
+                    Style="{StaticResource GrowButton}"
+                    ToolTip="Toggle"
+                    Visibility="Visible" />
+                <TextBlock
+                    x:Name="tbCheckbox2"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    Text="Checkbox 2 example">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="2"
+                            Opacity="0.7"
+                            ShadowDepth="3"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="4"
+                Grid.Column="0"
+                Margin="0"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="btnCircle1"
+                    Width="52"
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Button_Click"
+                    Content="&#xf10c;"
+                    FontFamily="{StaticResource FontAwesome}"
+                    FontSize="32"
+                    Style="{StaticResource GrowButton}"
+                    ToolTip="Toggle"
+                    Visibility="Visible" />
+                <TextBlock
+                    x:Name="tbCircle1"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    Foreground="{StaticResource PrimaryBrush}"
+                    Text="Circle 1 example">
+                    <TextBlock.Effect>
+                        <DropShadowEffect
+                            BlurRadius="2"
+                            Opacity="0.7"
+                            ShadowDepth="3"
+                            Color="Black" />
+                    </TextBlock.Effect>
+                </TextBlock>
+            </StackPanel>
+            <StackPanel
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="1"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="btnClose"
+                    Width="52"
+                    Height="32"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Click="Button_Click"
+                    Content="&#xf2d3;"
+                    FontFamily="{StaticResource FontAwesome}"
+                    FontSize="32"
+                    Style="{StaticResource GrowButton}"
+                    ToolTip="Save"
+                    Visibility="Visible" />
+            </StackPanel>
+        </Grid>
+
         <TextBlock
-            Grid.Row="0"
+            Grid.Row="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="20"
@@ -49,39 +262,5 @@
             </TextBlock.Effect>
         </TextBlock>
 
-        <StackPanel
-            Grid.Row="1"
-            Margin="0,0,0,4"
-            Orientation="Horizontal">
-            <Button
-                x:Name="btnToggle"
-                Width="52"
-                Height="32"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                BorderThickness="0"
-                Click="Button_Click"
-                Content="&#xf205;"
-                FontFamily="{StaticResource FontAwesome}"
-                FontSize="24"
-                Style="{StaticResource GrowButton}"
-                ToolTip="Toggle"
-                Visibility="Visible" />
-            <TextBlock
-                x:Name="tbToggle"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="16"
-                Foreground="{StaticResource PrimaryBrush}"
-                Text="Toggle button example">
-                <TextBlock.Effect>
-                    <DropShadowEffect
-                        BlurRadius="2"
-                        Opacity="0.7"
-                        ShadowDepth="3"
-                        Color="Black" />
-                </TextBlock.Effect>
-            </TextBlock>
-        </StackPanel>
     </Grid>
 </Window>

@@ -473,34 +473,34 @@
                 </Grid.ColumnDefinitions>
                 <Button
                     Grid.Column="0"
-                    Width="70"
+                    Width="80"
                     BorderThickness="1"
                     Command="{Binding Command1}"
-                    Content="Cmd1"
+                    Content="Sync1"
                     FontSize="20"
                     Style="{StaticResource GrowButton}" />
                 <Button
                     Grid.Column="1"
-                    Width="70"
+                    Width="80"
                     BorderThickness="1"
                     Command="{Binding Command2}"
-                    Content="Cmd2"
+                    Content="Sync2"
                     FontSize="20"
                     Style="{StaticResource GrowButton}" />
                 <Button
                     Grid.Column="2"
-                    Width="70"
+                    Width="80"
                     BorderThickness="1"
                     Command="{Binding Command3}"
-                    Content="Cmd3"
+                    Content="Async3"
                     FontSize="20"
                     Style="{StaticResource GrowButton}" />
                 <Button
                     Grid.Column="3"
-                    Width="70"
+                    Width="80"
                     BorderThickness="1"
                     Command="{Binding Command4}"
-                    Content="Cmd4"
+                    Content="Async4"
                     FontSize="20"
                     Style="{StaticResource GrowButton}" />
             </Grid>
